@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <%data.forEach(val=>{%>
+        <h2>
+            <%= val.name%>
+        </h2>
+        <img src="<%= val.image%>" alt="<%= val.name%>">
+        <h3>Full Name:
+            <%= val.full_name%>
+                <form action="/details/<%= val.id%>" method="GET">
+                    <button type="submit"> show details</button></form>
+                <%})%>
+</body>
+
+</html>

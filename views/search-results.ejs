@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>hero search results</h1>
+    <%heroRising.forEach(val=>{%>
+        <h2>
+            <%= val.name%>
+        </h2>
+        <img src="<%= val.image%>" alt="<%= val.name%>">
+        <h3>Full Name:
+            <%= val.full_name%>
+        </h3>
+        <h3>Hero States:</h3>
+        <span>intelligence: <%= val.intelligence%></span>
+        <br>
+        <span>strength: <%= val.strength%></span>
+        <br>
+        <span>speed: <%= val.speed%></span>
+        <br>
+        <span>durability: <%= val.durability%></span>
+        <br>
+        <span>power: <%= val.power%></span>
+        <br>
+        <span>combat: <%= val.combat%></span>
+        <h4>place_of_birth:
+            <%= val.place_of_birth%>
+        </h4>
+        <h4>Aliases: <br>
+        </h4>
+        <%val.aliases.forEach(val=>{%>
+            <span>   <%= val%>,</span>
+            <%})%>
+                <h4> first_apce:
+                </h4>
+                <span> <%= val.first_apce%></span>
+                <h4> publisher:
+                </h4>
+                <span> <%= val.publisher%></span>
+                <h4> appearance:
+                </h4>
+                <span>genre: <%= val.appearance%></span><br>
+                <span>race: <%= val.race%></span><br>
+                <span>hair color: <%= val.hair%></span><br>
+                <span>eye color: <%= val.eye%></span>
+                <br> height:
+                <%val.height.forEach(val=>{%>
+                    <span>  <%= val%>,</span>
+                    <%})%>
+                        <br> weight:
+                        <%val.weight.forEach(val=>{%>
+                            <span>  <%= val%>,</span>
+                            <%})%>
+                                <h4>
+                                </h4>
+                                <h4>
+                                    Work: <br>
+                                </h4>
+                                <span>work occupation: <%= val.work_occupation%></span>
+                                <br>
+                                <span>base: <%= val.base%></span>
+                                <h4>connections: </h4>
+                                <span>conection group: <%= val.connections_group%></span>
+                                <br> <span>connections_relatives : <%= val.connections_relatives%></span>
+
+                                <form action="/favorite" method="POST">
+                                    <input type="text" name="name" value=" <%= val.name%>">
+                                    <input type="text" name="full_name" value=" <%= val.full_name%>">
+                                    <input type="text" name="image" value=" <%= val.image%>">
+                                    <input type="text" name="place_of_birth" value=" <%= val.place_of_birth%>">
+                                    <input type="text" name="work_occupation" value="<%= val.work_occupation%>">
+                                    <input type="text" name="idCharacter" value="<%= val.idCharacter%>">
+
+                                    <button type="submit">add to fav</button>
+                                </form>
+                                <%})%>
+</body>
+
+</html>
