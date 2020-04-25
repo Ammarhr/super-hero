@@ -38,22 +38,27 @@ function searchHero(req, res) {
     let url = `https://superheroapi.com/api/${key}/search/${name}`;
     superagent.get(url).then(heros => {
         //         console.log('blanlanlanlanaln', heros.body.results);
-        heros.body.results.map(searchResults => {
-            let heros = new Hero(searchResults);
-            herosArray.push(heros);
-            //   herosArray.sort((a, b) => {
-            //           if (a.full_name.toLowerCase() < b.full_name.toLowerCase()) return -1;
-            //           if (a.full_name.toLowerCase() > b.full_name.toLowerCase()) return 1;
-            //           return herosArray;
-            //       })
-            herosArray.sort((a, b) => {
-                    if (a.strength < b.strength) return -1;
-                    if (a.strength > b.strength) return 1;
-                    return herosArray;
-                })
-                //   console.log('newwwwwwwwwwwwwww', heros)
-        })
-        res.render('./search-results', { heroRising: herosArray });
+        if (heros.body.results) {
+
+            heros.body.results.map(searchResults => {
+                let heros = new Hero(searchResults);
+                herosArray.push(heros);
+                //   herosArray.sort((a, b) => {
+                //           if (a.full_name.toLowerCase() < b.full_name.toLowerCase()) return -1;
+                //           if (a.full_name.toLowerCase() > b.full_name.toLowerCase()) return 1;
+                //           return herosArray;
+                //       })
+                herosArray.sort((a, b) => {
+                        if (a.strength < b.strength) return -1;
+                        if (a.strength > b.strength) return 1;
+                        return herosArray;
+                    })
+                    //   console.log('newwwwwwwwwwwwwww', heros)
+            })
+            res.render('./search-results', { heroRising: herosArray });
+        } else {
+            res.render('./errors');
+        }
     })
 
 }
@@ -158,6 +163,9 @@ function Hero(data) {
     this.connections_relatives = data.connections.relatives;
     this.image = data.image.url;
 }
+app.use('*', (request, response) => {
+    response.render('./errors');
+})
 
 client.connect().then(() => {
     app.listen(PORT, () => {
