@@ -5,19 +5,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
-    <%data.forEach(val=>{%>
-        <h2>
-            <%= val.name%>
-        </h2>
-        <img src="<%= val.image%>" alt="<%= val.name%>">
-        <h3>Full Name:
-            <%= val.full_name%>
-                <form action="/details/<%= val.id%>" method="GET">
-                    <button type="submit"> show details</button></form>
-                <%})%>
+    <header>
+        <h1>Favorite List</h1>
+    </header>
+    <%data.sort((a, b) => {%>
+        <%if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;%>
+            <%if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;%>
+                <%return data;%>
+                    <%})%>
+
+                        <section>
+                            <%data.forEach(val=>{%>
+
+                                <div id="fav">
+                                    <h2>
+                                        <%= val.name%>
+                                    </h2>
+                                    <img src="<%= val.image%>" alt="<%= val.name%>">
+                                    <h3>Full Name:
+                                        <%= val.full_name%>
+                                            <form action="/details/<%= val.id%>" method="GET">
+                                                <button type="submit"> show details</button></form>
+                                </div>
+                                <%})%>
+                        </section>
 </body>
 
 </html>

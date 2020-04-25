@@ -26,7 +26,14 @@
     <br>
     <form action="/delete/<%= data.id%>?_method=delete" method="POST">
         <button type="submit"> delete </button></form>
-
+    <form action="/update/<%= data.id%>?_method=put" method="POST">
+        <input type="text" name="name" value=" <%= data.name%>">
+        <input type="text" name="full_name" value=" <%= data.full_name%>">
+        <input type="text" name="image" value=" <%= data.image%>">
+        <input type="text" name="place_of_birth" value=" <%= data.place_of_birth%>">
+        <input type="text" name="work_occupation" value="<%= data.work_occupation%>">
+        <input type="number" name="idCharacter" value="<%= data.idcharacter %>">
+        <button type="submit"> update </button></form>
 </body>
 
 </html>

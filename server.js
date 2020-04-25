@@ -10,8 +10,9 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 const pg = require('pg');
 const client = new pg.Client(process.env.DATABASE_URL);
-app.use(methodOverride('_method'));
+
 app.set('view engine', 'ejs');
+app.use(methodOverride('_method'));
 app.use(express.static('./public'));
 app.use(cors());
 app.use(express.json());
@@ -23,6 +24,7 @@ app.post('/favorite', addToFav);
 app.get('/getData', getData);
 app.get('/details/:id', getDetails);
 app.delete('/delete/:id', deleteData);
+app.put('/update/:id', updateData);
 
 function getStarted(req, res) {
     res.render('./home');
@@ -32,13 +34,24 @@ function searchHero(req, res) {
     let herosArray = [];
     let key = process.env.SUPER_HERO_KEY;
     let name = req.body.search_character;
+    name = name.replace(/\s/g, '%20');
     let url = `https://superheroapi.com/api/${key}/search/${name}`;
     superagent.get(url).then(heros => {
         //         console.log('blanlanlanlanaln', heros.body.results);
         heros.body.results.map(searchResults => {
             let heros = new Hero(searchResults);
             herosArray.push(heros);
-            //   console.log('newwwwwwwwwwwwwww', heros)
+            //   herosArray.sort((a, b) => {
+            //           if (a.full_name.toLowerCase() < b.full_name.toLowerCase()) return -1;
+            //           if (a.full_name.toLowerCase() > b.full_name.toLowerCase()) return 1;
+            //           return herosArray;
+            //       })
+            herosArray.sort((a, b) => {
+                    if (a.strength < b.strength) return -1;
+                    if (a.strength > b.strength) return 1;
+                    return herosArray;
+                })
+                //   console.log('newwwwwwwwwwwwwww', heros)
         })
         res.render('./search-results', { heroRising: herosArray });
     })
@@ -47,11 +60,11 @@ function searchHero(req, res) {
 
 function addToFav(req, res) {
     let chId = req.body.idCharacter;
-    console.log('amaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaar', chId)
+    //     console.log('amaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaar', chId)
     let sql = `SELECT * FROM hero WHERE idCharacter = $1;`
     let val = [chId];
     client.query(sql, val).then(check => {
-        console.log('baaaaaaaaaaaaaaaaaaaaaaa', check.rows[0])
+        //         console.log('baaaaaaaaaaaaaaaaaaaaaaa', check.rows[0])
         if (check.rowCount > 0) {
             res.render('./database', { data: check.rows });
         } else {
@@ -66,7 +79,7 @@ function addToFav(req, res) {
             let SQL = `INSERT INTO hero (name,full_name,image,place_of_birth,work_occupation,idCharacter) VALUES ($1,$2,$3,$4,$5,$6);`;
             let safeValues = [name, full_name, image, place_of_birth, work_occupation, idCharacter];
             client.query(SQL, safeValues).then(() => {
-                res.redirect('/');
+                res.redirect('/getData');
             })
         }
     })
@@ -75,18 +88,18 @@ function addToFav(req, res) {
 function getData(req, res) {
     let SQL = `SELECT * FROM hero;`
     client.query(SQL)
-        .then(result => {
-            res.render('./database', { data: result.rows })
-        })
+
+    .then(result => {
+        res.render('./database', { data: result.rows })
+    })
 }
 
 function getDetails(req, res) {
     let SQL = `SELECT * FROM hero WHERE id = $1;`;
     let val = [req.params.id];
-    console.log('baaaaaaaaaaaaaaaaaaaaaaa', val)
-
+    //     console.log('baaaaaaaaaaaaaaaaaaaaaaa', val)
     client.query(SQL, val).then(results => {
-        console.log('baaaaaaaaaaaaaaaaaaaaaaa', results.rows[0])
+        //         console.log('baaaaaaaaaaaaaaaaaaaaaaa', results.rows[0])
         res.render('./details', { data: results.rows[0] })
     })
 }
@@ -98,6 +111,26 @@ function deleteData(req, res) {
         res.redirect('/getData');
     })
 }
+
+function updateData(req, res) {
+    let {
+        name,
+        full_name,
+        image,
+        place_of_birth,
+        work_occupation,
+        idCharacter
+    } = req.body;
+    let idCh = req.params.id;
+    //     console.log('asdadasdasddclds,cld,c', req.params.id)
+    let SQL = `UPDATE hero SET name=$1,full_name=$2,image=$3,place_of_birth=$4,work_occupation=$5,idCharacter=$6 WHERE id=$7;`;
+    let safeValues = [name, full_name, image, place_of_birth, work_occupation, idCharacter, idCh];
+    client.query(SQL, safeValues).then(() => {
+        res.redirect(`/details/${idCh}`);
+    })
+}
+
+
 
 function Hero(data) {
     this.idCharacter = data.id;
